@@ -13,7 +13,8 @@ The included guide covers three stages of a small project: setting a goal, plann
 - **Admin contact:** Contact Admin displays the configured Telegram contact link. When no contact is configured, an explicitly labeled demo shows an Open Demo Link button leading to `https://example.com`.
 - **PDF download:** Download Checklist sends the included project checklist. If the file is unavailable, the bot responds with a short availability message.
 
-Help currently returns a placeholder message.
+- **Help:** `/help` and Help explain the menu, guide navigation, PDF download, and admin contact. Help preserves the current guide step.
+- **Message guidance:** Unknown text and commands receive a helpful hint with the current navigation buttons, without changing guide progress.
 
 ## Menu
 
@@ -22,7 +23,16 @@ Help currently returns a placeholder message.
 | Start Guide | Open the three-step guide. |
 | Download Checklist | Receive the project checklist as a PDF document. |
 | Contact Admin | Show the configured admin link, or preview a link button using the example website. |
-| Help | Show the current help placeholder. |
+| Help | Show instructions and keep the current guide step. |
+
+## Commands
+
+| Command | Action |
+| --- | --- |
+| `/start` | Return to the main menu and reset the guide in the current chat. |
+| `/help` | Show instructions without resetting guide progress. |
+
+Help and unknown-message replies retain Next, Back, and Main Menu while a guide is active. Outside a guide, they show the main menu.
 
 ## Technologies
 
@@ -47,7 +57,7 @@ stepwise-telegram-bot/
 └── README.md
 ```
 
-`bot.py` starts the application and handles menu actions, guide navigation, and document delivery. `content.py` contains the English messages, button labels, and guide text. `files/checklist.pdf` is the document sent by Download Checklist.
+`bot.py` starts the application and handles commands, menu actions, guide navigation, document delivery, and unknown text. `content.py` contains the English messages, button labels, and guide text. `files/checklist.pdf` is the document sent by Download Checklist.
 
 ## Setup and run
 
