@@ -8,21 +8,18 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.error import TelegramError
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
-from content import MENU_LAYOUT, MENU_RESPONSES, WELCOME_MESSAGE
+from content import (
+    GUIDE_COMPLETE_MESSAGE,
+    GUIDE_INACTIVE_MESSAGE,
+    GUIDE_LAYOUT,
+    GUIDE_STEPS,
+    MENU_LAYOUT,
+    MENU_RESPONSES,
+    WELCOME_MESSAGE,
+)
 
 
 logger = logging.getLogger(__name__)
-
-
-async def start(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-) -> None:
-    """Reply to the /start command."""
-    if update.message is not None:
-        await update.message.reply_text(
-            WELCOME_MESSAGE, reply_markup=main_menu_keyboard()
-        )
 
 
 def main_menu_keyboard() -> ReplyKeyboardMarkup:
@@ -30,16 +27,77 @@ def main_menu_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(MENU_LAYOUT, resize_keyboard=True)
 
 
+async def start(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    """Reset this user's guide in this chat and show the main menu."""
+    if update.message is not None:
+        context.user_data.pop(f"guide_step:{update.message.chat_id}", None)
+        await update.message.reply_text(
+            WELCOME_MESSAGE, reply_markup=main_menu_keyboard()
+        )
+
+
+async def show_guide_step(update: Update, step: int) -> None:
+    """Show a guide step with its navigation buttons."""
+    if update.message is not None:
+        await update.message.reply_text(
+            f"Step {step + 1} of {len(GUIDE_STEPS)}\n\n{GUIDE_STEPS[step]}",
+            reply_markup=ReplyKeyboardMarkup(GUIDE_LAYOUT, resize_keyboard=True),
+        )
+
+
 async def menu_choice(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    """Reply with the placeholder for a recognized menu button."""
+    """Start the guide or reply to another recognized menu button."""
     if update.message is None:
+        return
+    progress_key = f"guide_step:{update.message.chat_id}"
+    if update.message.text == "Start Guide":
+        context.user_data[progress_key] = 0
+        await show_guide_step(update, 0)
         return
     response = MENU_RESPONSES.get(update.message.text)
     if response is not None:
+        context.user_data.pop(progress_key, None)
         await update.message.reply_text(response, reply_markup=main_menu_keyboard())
+
+
+async def guide_navigation(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    """Move through the guide without sharing progress between users or chats."""
+    if update.message is None:
+        return
+    action = update.message.text
+    if action == "Main Menu":
+        await start(update, context)
+        return
+    if action not in ("Next", "Back"):
+        return
+    progress_key = f"guide_step:{update.message.chat_id}"
+    step = context.user_data.get(progress_key)
+    if step is None:
+        await update.message.reply_text(
+            GUIDE_INACTIVE_MESSAGE, reply_markup=main_menu_keyboard()
+        )
+        return
+    if action == "Next":
+        if step == len(GUIDE_STEPS) - 1:
+            context.user_data.pop(progress_key, None)
+            await update.message.reply_text(
+                GUIDE_COMPLETE_MESSAGE, reply_markup=main_menu_keyboard()
+            )
+            return
+        step += 1
+    else:
+        step = max(0, step - 1)
+    context.user_data[progress_key] = step
+    await show_guide_step(update, step)
 
 
 async def handle_error(
@@ -70,13 +128,24 @@ def main() -> None:
     try:
         application = Application.builder().token(token).build()
         application.add_handler(CommandHandler("start", start))
+        menu_labels = [label for row in MENU_LAYOUT for label in row]
         menu_pattern = re.compile(
-            r"\A(?:" + "|".join(re.escape(label) for label in MENU_RESPONSES) + r")\Z"
+            r"\A(?:" + "|".join(re.escape(label) for label in menu_labels) + r")\Z"
         )
         application.add_handler(
             MessageHandler(
                 filters.TEXT & ~filters.COMMAND & filters.Regex(menu_pattern),
                 menu_choice,
+            )
+        )
+        guide_labels = [label for row in GUIDE_LAYOUT for label in row]
+        guide_pattern = re.compile(
+            r"\A(?:" + "|".join(re.escape(label) for label in guide_labels) + r")\Z"
+        )
+        application.add_handler(
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND & filters.Regex(guide_pattern),
+                guide_navigation,
             )
         )
         application.add_error_handler(handle_error)

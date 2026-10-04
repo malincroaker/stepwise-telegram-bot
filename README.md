@@ -5,7 +5,8 @@ A small Telegram bot built with Python.
 ## Features
 
 - English main menu shown by `/start`
-- Start Guide, Download Checklist, Contact Admin, and Help buttons with placeholder replies
+- A three-step guide with Next, Back, and Main Menu navigation
+- Download Checklist, Contact Admin, and Help buttons with placeholder replies
 
 ## Technologies
 
