@@ -18,6 +18,11 @@ HELP_MESSAGE = (
     "/start: return to the main menu and reset your guide progress."
 )
 
+UNKNOWN_MESSAGE = (
+    "I didn't recognize that message or command. Use the buttons below, "
+    "/help for instructions, or /start to return to the main menu."
+)
+
 GUIDE_LAYOUT = (
     ("Back", "Next"),
     ("Main Menu",),

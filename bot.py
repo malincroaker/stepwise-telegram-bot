@@ -27,6 +27,7 @@ from content import (
     GUIDE_STEPS,
     MENU_LAYOUT,
     HELP_MESSAGE,
+    UNKNOWN_MESSAGE,
     WELCOME_MESSAGE,
 )
 
@@ -195,6 +196,18 @@ async def guide_navigation(
     await show_guide_step(update, step)
 
 
+async def unknown_message(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    """Suggest supported actions without echoing text or changing progress."""
+    if update.message is not None:
+        await update.message.reply_text(
+            UNKNOWN_MESSAGE,
+            reply_markup=navigation_keyboard(context, update.message.chat_id),
+        )
+
+
 async def handle_error(
     update: object,
     context: ContextTypes.DEFAULT_TYPE,
@@ -245,6 +258,8 @@ def main() -> None:
                 guide_navigation,
             )
         )
+        # Keep the fallback last so known commands and buttons are handled first.
+        application.add_handler(MessageHandler(filters.TEXT, unknown_message))
         application.add_error_handler(handle_error)
         application.run_polling()
     except TelegramError:
