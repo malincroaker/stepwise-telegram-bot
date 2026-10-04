@@ -68,9 +68,7 @@ async def send_checklist(update: Update) -> None:
     except OSError:
         logger.warning("The checklist file could not be read.")
         await update.message.reply_text(
-            CHECKLIST_UNAVAILABLE_MESSAGE,
-    CONTACT_MESSAGE,
-    CONTACT_UNAVAILABLE_MESSAGE, reply_markup=main_menu_keyboard()
+            CHECKLIST_UNAVAILABLE_MESSAGE, reply_markup=main_menu_keyboard()
         )
 
 
