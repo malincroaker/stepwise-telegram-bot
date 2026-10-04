@@ -12,9 +12,8 @@ The included guide covers three stages of a small project: setting a goal, plann
 - **Separate progress:** Each user has independent progress in each chat. Progress is held in memory and resets when the bot restarts.
 - **Admin contact:** Contact Admin displays the configured Telegram contact link. When no contact is configured, an explicitly labeled demo shows an Open Demo Link button leading to `https://example.com`.
 - **PDF download:** Download Checklist sends the included project checklist. If the file is unavailable, the bot responds with a short availability message.
-
 - **Help:** `/help` and Help explain the menu, guide navigation, PDF download, and admin contact. Help preserves the current guide step.
-- **Message guidance:** Unknown text and commands receive a helpful hint with the current navigation buttons, without changing guide progress.
+- **Message guidance:** Unknown text, commands, and unsupported media receive a helpful hint with the current navigation buttons, without changing guide progress.
 
 ## Menu
 
@@ -32,7 +31,7 @@ The included guide covers three stages of a small project: setting a goal, plann
 | `/start` | Return to the main menu and reset the guide in the current chat. |
 | `/help` | Show instructions without resetting guide progress. |
 
-Help and unknown-message replies retain Next, Back, and Main Menu while a guide is active. Outside a guide, they show the main menu.
+Help and unknown-message replies retain Next, Back, and Main Menu while a guide is active. Outside a guide, they show the main menu. Choosing Start Guide starts again from the first step; Download Checklist and Contact Admin exit an active guide.
 
 ## Technologies
 
@@ -57,11 +56,11 @@ stepwise-telegram-bot/
 └── README.md
 ```
 
-`bot.py` starts the application and handles commands, menu actions, guide navigation, document delivery, and unknown text. `content.py` contains the English messages, button labels, and guide text. `files/checklist.pdf` is the document sent by Download Checklist.
+`bot.py` starts the application and handles commands, menu actions, guide navigation, document delivery, and unsupported messages. `content.py` contains the English messages, button labels, and guide text. `files/checklist.pdf` is the document sent by Download Checklist.
 
 ## Setup and run
 
-Create `.env` from `.env.example` and set `BOT_TOKEN` to your Telegram bot token. Optionally set `ADMIN_CONTACT_URL` to a public Telegram username link in the form `https://t.me/<username>`. Leave it empty to show the demo contact with a link to `https://example.com`.
+Create `.env` from `.env.example` and set `BOT_TOKEN` to your Telegram bot token. Optionally set `ADMIN_CONTACT_URL` to a public Telegram username link in the form `https://t.me/<username>`. Leave it empty to show the demo contact with a link to `https://example.com`. Restart the bot after changing its configuration.
 
 ### Windows
 
