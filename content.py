@@ -3,9 +3,18 @@
 WELCOME_MESSAGE = "Welcome to Stepwise! Choose an option from the main menu."
 MAIN_MENU_MESSAGE = "Main menu. Choose an option below."
 
+BUTTON_LABELS = {
+    "start_guide": "Start Guide",
+    "download_checklist": "Download Checklist",
+    "contact_admin": "Contact Admin",
+    "help": "Help",
+    "back": "Back",
+    "next": "Next",
+    "main_menu": "Main Menu",
+}
 MENU_LAYOUT = (
-    ("Start Guide", "Download Checklist"),
-    ("Contact Admin", "Help"),
+    (BUTTON_LABELS["start_guide"], BUTTON_LABELS["download_checklist"]),
+    (BUTTON_LABELS["contact_admin"], BUTTON_LABELS["help"]),
 )
 
 HELP_MESSAGE = (
@@ -13,11 +22,12 @@ HELP_MESSAGE = (
     "Start Guide: follow a three-step guide. Use Next and Back to move between "
     "steps, or Main Menu to leave the guide. Back on the first step returns to "
     "the main menu. Next on the final step completes the guide.\n\n"
-    "Download Checklist: get the project checklist as a PDF.\n\n"
+    "Download Checklist: get the project checklist as a PDF in your chosen language.\n\n"
     "Contact Admin: view the configured admin link. If no contact is configured, "
     "Open Demo Link previews an example website.\n\n"
-    "Help or /help: show these instructions.\n\n"
-    "Help, Download Checklist, and Contact Admin keep your guide progress.\n"
+    "Help or /help: show these instructions.\n"
+    "/language: choose English or Russian.\n\n"
+    "Help, Download Checklist, Contact Admin, and language changes keep your guide progress.\n"
     "/start: return to the main menu and reset your guide progress."
 )
 
@@ -27,8 +37,8 @@ UNKNOWN_MESSAGE = (
 )
 
 GUIDE_LAYOUT = (
-    ("Back", "Next"),
-    ("Main Menu",),
+    (BUTTON_LABELS["back"], BUTTON_LABELS["next"]),
+    (BUTTON_LABELS["main_menu"],),
 )
 
 GUIDE_STEPS = (
@@ -55,3 +65,8 @@ CONTACT_DEMO_MESSAGE = (
 )
 CONTACT_DEMO_BUTTON_LABEL = "Open Demo Link"
 CONTACT_DEMO_URL = "https://example.com"
+
+GUIDE_STEP_TEMPLATE = "Step {step} of {total}\n\n{text}"
+CHECKLIST_FILENAME = "checklist.pdf"
+LANGUAGE_PROMPT = "Choose your language:"
+LANGUAGE_SELECTED_MESSAGE = "Language set to English."
