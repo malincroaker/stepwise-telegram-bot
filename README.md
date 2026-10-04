@@ -31,7 +31,7 @@ The included guide covers three stages of a small project: setting a goal, plann
 | `/start` | Return to the main menu and reset the guide in the current chat. |
 | `/help` | Show instructions without resetting guide progress. |
 
-Help and unknown-message replies retain Next, Back, and Main Menu while a guide is active. Outside a guide, they show the main menu. Choosing Start Guide starts again from the first step; Download Checklist and Contact Admin exit an active guide.
+Help, Download Checklist, Contact Admin, and unknown-message replies preserve the current guide step and retain Next, Back, and Main Menu while a guide is active. Outside a guide, the main menu remains available. Main Menu or Back on the first step exits the guide; `/start` resets it; Start Guide begins again from the first step. Next on the final step completes the guide.
 
 ## Technologies
 

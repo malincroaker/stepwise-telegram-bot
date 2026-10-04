@@ -85,7 +85,10 @@ async def show_guide_step(update: Update, step: int) -> None:
         )
 
 
-async def send_checklist(update: Update) -> None:
+async def send_checklist(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     """Send the fixed checklist file or a helpful availability message."""
     if update.message is None:
         return
@@ -95,12 +98,13 @@ async def send_checklist(update: Update) -> None:
                 document=checklist,
                 filename="checklist.pdf",
                 caption=CHECKLIST_CAPTION,
-                reply_markup=main_menu_keyboard(),
+                reply_markup=navigation_keyboard(context, update.message.chat_id),
             )
     except OSError:
         logger.warning("The checklist file could not be read.")
         await update.message.reply_text(
-            CHECKLIST_UNAVAILABLE_MESSAGE, reply_markup=main_menu_keyboard()
+            CHECKLIST_UNAVAILABLE_MESSAGE,
+            reply_markup=navigation_keyboard(context, update.message.chat_id),
         )
 
 
@@ -126,7 +130,7 @@ async def show_admin_contact(
     url = context.bot_data.get("admin_contact_url", "")
     if url:
         text = f"{CONTACT_MESSAGE}\n{url}"
-        keyboard = main_menu_keyboard()
+        keyboard = navigation_keyboard(context, update.message.chat_id)
     else:
         text = CONTACT_DEMO_MESSAGE
         keyboard = InlineKeyboardMarkup(
@@ -152,16 +156,9 @@ async def menu_choice(
         await show_guide_step(update, 0)
         return
     if update.message.text == "Download Checklist":
-        context.user_data.pop(progress_key, None)
-        await send_checklist(update)
+        await send_checklist(update, context)
         return
     if update.message.text == "Contact Admin":
-        previous_step = context.user_data.pop(progress_key, None)
-        if previous_step is not None and not context.bot_data.get("admin_contact_url"):
-            # An inline link cannot replace the guide's reply keyboard.
-            await update.message.reply_text(
-                MAIN_MENU_MESSAGE, reply_markup=main_menu_keyboard()
-            )
         await show_admin_contact(update, context)
         return
     if update.message.text == "Help":

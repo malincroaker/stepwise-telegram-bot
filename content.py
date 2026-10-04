@@ -16,7 +16,8 @@ HELP_MESSAGE = (
     "Download Checklist: get the project checklist as a PDF.\n\n"
     "Contact Admin: view the configured admin link. If no contact is configured, "
     "Open Demo Link previews an example website.\n\n"
-    "Help or /help: show these instructions without losing your guide progress.\n"
+    "Help or /help: show these instructions.\n\n"
+    "Help, Download Checklist, and Contact Admin keep your guide progress.\n"
     "/start: return to the main menu and reset your guide progress."
 )
 
