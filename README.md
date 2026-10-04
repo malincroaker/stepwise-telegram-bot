@@ -4,7 +4,8 @@ A small Telegram bot built with Python.
 
 ## Features
 
-- English response to `/start`
+- English main menu shown by `/start`
+- Start Guide, Download Checklist, Contact Admin, and Help buttons with placeholder replies
 
 ## Technologies
 
