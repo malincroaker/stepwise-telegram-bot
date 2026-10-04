@@ -10,9 +10,10 @@ The included guide covers three stages of a small project: setting a goal, plann
 - **Three-step guide:** Start Guide opens the first step. Next and Back move between steps; Main Menu returns to the menu.
 - **Guide completion:** Next on the final step shows a completion message. The guide can be started again from the beginning.
 - **Separate progress:** Each user has independent progress in each chat. Progress is held in memory and resets when the bot restarts.
+- **Admin contact:** Contact Admin displays the configured Telegram contact link. No default destination is included.
 - **PDF download:** Download Checklist sends the included project checklist. If the file is unavailable, the bot responds with a short availability message.
 
-Contact Admin and Help currently return placeholder messages.
+Help currently returns a placeholder message.
 
 ## Menu
 
@@ -20,7 +21,7 @@ Contact Admin and Help currently return placeholder messages.
 | --- | --- |
 | Start Guide | Open the three-step guide. |
 | Download Checklist | Receive the project checklist as a PDF document. |
-| Contact Admin | Show the current contact placeholder. |
+| Contact Admin | Show the configured admin link, or an availability message when no contact is set. |
 | Help | Show the current help placeholder. |
 
 ## Technologies
@@ -50,7 +51,7 @@ stepwise-telegram-bot/
 
 ## Setup and run
 
-Create `.env` from `.env.example` and set `BOT_TOKEN` to your Telegram bot token.
+Create `.env` from `.env.example` and set `BOT_TOKEN` to your Telegram bot token. Optionally set `ADMIN_CONTACT_URL` to a public Telegram username link in the form `https://t.me/<username>`. Leave it empty to keep the admin contact disabled.
 
 ### Windows
 

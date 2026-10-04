@@ -8,7 +8,6 @@ MENU_LAYOUT = (
 )
 
 MENU_RESPONSES = {
-    "Contact Admin": "The admin contact will be added in a later step.",
     "Help": "Choose an option from the main menu. More help will be added soon.",
 }
 
@@ -33,3 +32,6 @@ CHECKLIST_CAPTION = "Here is your project checklist."
 CHECKLIST_UNAVAILABLE_MESSAGE = (
     "The checklist is temporarily unavailable. Please try again later."
 )
+
+CONTACT_MESSAGE = "You can contact the admin here:"
+CONTACT_UNAVAILABLE_MESSAGE = "The admin contact is not configured yet."

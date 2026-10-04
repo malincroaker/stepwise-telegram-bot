@@ -4,13 +4,15 @@ import re
 from pathlib import Path
 
 from dotenv import load_dotenv
-from telegram import ReplyKeyboardMarkup, Update
+from telegram import LinkPreviewOptions, ReplyKeyboardMarkup, Update
 from telegram.error import TelegramError
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 from content import (
     CHECKLIST_CAPTION,
     CHECKLIST_UNAVAILABLE_MESSAGE,
+    CONTACT_MESSAGE,
+    CONTACT_UNAVAILABLE_MESSAGE,
     GUIDE_COMPLETE_MESSAGE,
     GUIDE_INACTIVE_MESSAGE,
     GUIDE_LAYOUT,
@@ -66,8 +68,38 @@ async def send_checklist(update: Update) -> None:
     except OSError:
         logger.warning("The checklist file could not be read.")
         await update.message.reply_text(
-            CHECKLIST_UNAVAILABLE_MESSAGE, reply_markup=main_menu_keyboard()
+            CHECKLIST_UNAVAILABLE_MESSAGE,
+    CONTACT_MESSAGE,
+    CONTACT_UNAVAILABLE_MESSAGE, reply_markup=main_menu_keyboard()
         )
+
+
+def read_admin_contact_url() -> str:
+    """Accept only an explicitly configured public Telegram username link."""
+    url = os.environ.get("ADMIN_CONTACT_URL", "").strip()
+    if url and not re.fullmatch(r"https://t\.me/[A-Za-z][A-Za-z0-9_]{3,31}", url):
+        logger.warning(
+            "ADMIN_CONTACT_URL must be an HTTPS t.me username link. "
+            "Admin contact is disabled."
+        )
+        return ""
+    return url
+
+
+async def show_admin_contact(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    """Show the configured admin link without a default destination."""
+    if update.message is None:
+        return
+    url = context.bot_data.get("admin_contact_url", "")
+    text = f"{CONTACT_MESSAGE}\n{url}" if url else CONTACT_UNAVAILABLE_MESSAGE
+    await update.message.reply_text(
+        text,
+        reply_markup=main_menu_keyboard(),
+        link_preview_options=LinkPreviewOptions(is_disabled=True),
+    )
 
 
 async def menu_choice(
@@ -85,6 +117,10 @@ async def menu_choice(
     if update.message.text == "Download Checklist":
         context.user_data.pop(progress_key, None)
         await send_checklist(update)
+        return
+    if update.message.text == "Contact Admin":
+        context.user_data.pop(progress_key, None)
+        await show_admin_contact(update, context)
         return
     response = MENU_RESPONSES.get(update.message.text)
     if response is not None:
@@ -153,6 +189,7 @@ def main() -> None:
 
     try:
         application = Application.builder().token(token).build()
+        application.bot_data["admin_contact_url"] = read_admin_contact_url()
         application.add_handler(CommandHandler("start", start))
         menu_labels = [label for row in MENU_LAYOUT for label in row]
         menu_pattern = re.compile(
