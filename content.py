@@ -11,7 +11,8 @@ MENU_LAYOUT = (
 HELP_MESSAGE = (
     "How to use Stepwise\n\n"
     "Start Guide: follow a three-step guide. Use Next and Back to move between "
-    "steps, or Main Menu to leave the guide. Next on the final step completes it.\n\n"
+    "steps, or Main Menu to leave the guide. Back on the first step returns to "
+    "the main menu. Next on the final step completes the guide.\n\n"
     "Download Checklist: get the project checklist as a PDF.\n\n"
     "Contact Admin: view the configured admin link. If no contact is configured, "
     "Open Demo Link previews an example website.\n\n"

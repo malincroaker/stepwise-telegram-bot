@@ -7,7 +7,7 @@ The included guide covers three stages of a small project: setting a goal, plann
 ## Features
 
 - **Main menu:** `/start` shows four actions through Telegram buttons.
-- **Three-step guide:** Start Guide opens the first step. Next and Back move between steps; Main Menu returns to the menu.
+- **Three-step guide:** Start Guide opens the first step. Next and Back move between steps; Back on the first step or Main Menu returns to the menu.
 - **Guide completion:** Next on the final step shows a completion message. The guide can be started again from the beginning.
 - **Separate progress:** Each user has independent progress in each chat. Progress is held in memory and resets when the bot restarts.
 - **Admin contact:** Contact Admin displays the configured Telegram contact link. When no contact is configured, an explicitly labeled demo shows an Open Demo Link button leading to `https://example.com`.

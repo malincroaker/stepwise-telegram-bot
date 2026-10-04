@@ -171,16 +171,16 @@ async def guide_navigation(
     if update.message is None:
         return
     action = update.message.text
-    if action == "Main Menu":
-        context.user_data.pop(f"guide_step:{update.message.chat_id}", None)
+    progress_key = f"guide_step:{update.message.chat_id}"
+    step = context.user_data.get(progress_key)
+    if action == "Main Menu" or (action == "Back" and step == 0):
+        context.user_data.pop(progress_key, None)
         await update.message.reply_text(
             MAIN_MENU_MESSAGE, reply_markup=main_menu_keyboard()
         )
         return
     if action not in ("Next", "Back"):
         return
-    progress_key = f"guide_step:{update.message.chat_id}"
-    step = context.user_data.get(progress_key)
     if step is None:
         await update.message.reply_text(
             GUIDE_INACTIVE_MESSAGE, reply_markup=main_menu_keyboard()
@@ -195,7 +195,7 @@ async def guide_navigation(
             return
         step += 1
     else:
-        step = max(0, step - 1)
+        step -= 1
     context.user_data[progress_key] = step
     await show_guide_step(update, step)
 
