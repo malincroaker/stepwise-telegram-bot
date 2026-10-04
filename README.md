@@ -1,5 +1,7 @@
 # Stepwise
 
+English | [Russian](README.ru.md)
+
 Stepwise is a Telegram bot that guides users through a short process and provides a PDF checklist they can keep for later. Its interface, guide content, and messages are in English.
 
 The included guide covers three stages of a small project: setting a goal, planning the work, and checking the result.
@@ -53,7 +55,8 @@ stepwise-telegram-bot/
 ├── .env.example
 ├── .gitignore
 ├── .gitattributes
-└── README.md
+├── README.md
+└── README.ru.md
 ```
 
 `bot.py` starts the application and handles commands, menu actions, guide navigation, document delivery, and unsupported messages. `content.py` contains the English messages, button labels, and guide text. `files/checklist.pdf` is the document sent by Download Checklist.
