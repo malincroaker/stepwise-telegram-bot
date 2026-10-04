@@ -218,7 +218,7 @@ async def unknown_message(
 
 
 async def handle_error(
-    update: object,
+    _update: object,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
     """Report the error type without exposing messages, URLs, or tokens."""
@@ -248,22 +248,16 @@ def main() -> None:
         application.add_handler(CommandHandler("start", start))
         application.add_handler(CommandHandler("help", show_help))
         menu_labels = [label for row in MENU_LAYOUT for label in row]
-        menu_pattern = re.compile(
-            r"\A(?:" + "|".join(re.escape(label) for label in menu_labels) + r")\Z"
-        )
         application.add_handler(
             MessageHandler(
-                filters.TEXT & ~filters.COMMAND & filters.Regex(menu_pattern),
+                filters.Text(menu_labels) & ~filters.COMMAND,
                 menu_choice,
             )
         )
         guide_labels = [label for row in GUIDE_LAYOUT for label in row]
-        guide_pattern = re.compile(
-            r"\A(?:" + "|".join(re.escape(label) for label in guide_labels) + r")\Z"
-        )
         application.add_handler(
             MessageHandler(
-                filters.TEXT & ~filters.COMMAND & filters.Regex(guide_pattern),
+                filters.Text(guide_labels) & ~filters.COMMAND,
                 guide_navigation,
             )
         )
