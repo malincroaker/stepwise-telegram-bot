@@ -26,6 +26,7 @@ from content import (
     GUIDE_LAYOUT,
     GUIDE_STEPS,
     MENU_LAYOUT,
+    MAIN_MENU_MESSAGE,
     HELP_MESSAGE,
     UNKNOWN_MESSAGE,
     WELCOME_MESSAGE,
@@ -171,7 +172,10 @@ async def guide_navigation(
         return
     action = update.message.text
     if action == "Main Menu":
-        await start(update, context)
+        context.user_data.pop(f"guide_step:{update.message.chat_id}", None)
+        await update.message.reply_text(
+            MAIN_MENU_MESSAGE, reply_markup=main_menu_keyboard()
+        )
         return
     if action not in ("Next", "Back"):
         return

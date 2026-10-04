@@ -1,6 +1,7 @@
 """English text and button labels for the main menu and guide."""
 
 WELCOME_MESSAGE = "Welcome to Stepwise! Choose an option from the main menu."
+MAIN_MENU_MESSAGE = "Main menu. Choose an option below."
 
 MENU_LAYOUT = (
     ("Start Guide", "Download Checklist"),
