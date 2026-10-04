@@ -7,9 +7,16 @@ MENU_LAYOUT = (
     ("Contact Admin", "Help"),
 )
 
-MENU_RESPONSES = {
-    "Help": "Choose an option from the main menu. More help will be added soon.",
-}
+HELP_MESSAGE = (
+    "How to use Stepwise\n\n"
+    "Start Guide: follow a three-step guide. Use Next and Back to move between "
+    "steps, or Main Menu to leave the guide. Next on the final step completes it.\n\n"
+    "Download Checklist: get the project checklist as a PDF.\n\n"
+    "Contact Admin: view the configured admin link. If no contact is configured, "
+    "Open Demo Link previews an example website.\n\n"
+    "Help or /help: show these instructions without losing your guide progress.\n"
+    "/start: return to the main menu and reset your guide progress."
+)
 
 GUIDE_LAYOUT = (
     ("Back", "Next"),

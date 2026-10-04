@@ -26,7 +26,7 @@ from content import (
     GUIDE_LAYOUT,
     GUIDE_STEPS,
     MENU_LAYOUT,
-    MENU_RESPONSES,
+    HELP_MESSAGE,
     WELCOME_MESSAGE,
 )
 
@@ -49,6 +49,28 @@ async def start(
         context.user_data.pop(f"guide_step:{update.message.chat_id}", None)
         await update.message.reply_text(
             WELCOME_MESSAGE, reply_markup=main_menu_keyboard()
+        )
+
+
+def navigation_keyboard(
+    context: ContextTypes.DEFAULT_TYPE,
+    chat_id: int,
+) -> ReplyKeyboardMarkup:
+    """Keep the active guide controls available when showing other messages."""
+    if f"guide_step:{chat_id}" in context.user_data:
+        return ReplyKeyboardMarkup(GUIDE_LAYOUT, resize_keyboard=True)
+    return main_menu_keyboard()
+
+
+async def show_help(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    """Explain the bot without changing the current guide step."""
+    if update.message is not None:
+        await update.message.reply_text(
+            HELP_MESSAGE,
+            reply_markup=navigation_keyboard(context, update.message.chat_id),
         )
 
 
@@ -135,10 +157,8 @@ async def menu_choice(
         context.user_data.pop(progress_key, None)
         await show_admin_contact(update, context)
         return
-    response = MENU_RESPONSES.get(update.message.text)
-    if response is not None:
-        context.user_data.pop(progress_key, None)
-        await update.message.reply_text(response, reply_markup=main_menu_keyboard())
+    if update.message.text == "Help":
+        await show_help(update, context)
 
 
 async def guide_navigation(
@@ -204,6 +224,7 @@ def main() -> None:
         application = Application.builder().token(token).build()
         application.bot_data["admin_contact_url"] = read_admin_contact_url()
         application.add_handler(CommandHandler("start", start))
+        application.add_handler(CommandHandler("help", show_help))
         menu_labels = [label for row in MENU_LAYOUT for label in row]
         menu_pattern = re.compile(
             r"\A(?:" + "|".join(re.escape(label) for label in menu_labels) + r")\Z"
