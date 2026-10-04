@@ -4,7 +4,13 @@ import re
 from pathlib import Path
 
 from dotenv import load_dotenv
-from telegram import LinkPreviewOptions, ReplyKeyboardMarkup, Update
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    LinkPreviewOptions,
+    ReplyKeyboardMarkup,
+    Update,
+)
 from telegram.error import TelegramError
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
@@ -12,7 +18,9 @@ from content import (
     CHECKLIST_CAPTION,
     CHECKLIST_UNAVAILABLE_MESSAGE,
     CONTACT_MESSAGE,
-    CONTACT_UNAVAILABLE_MESSAGE,
+    CONTACT_DEMO_BUTTON_LABEL,
+    CONTACT_DEMO_MESSAGE,
+    CONTACT_DEMO_URL,
     GUIDE_COMPLETE_MESSAGE,
     GUIDE_INACTIVE_MESSAGE,
     GUIDE_LAYOUT,
@@ -78,7 +86,7 @@ def read_admin_contact_url() -> str:
     if url and not re.fullmatch(r"https://t\.me/[A-Za-z][A-Za-z0-9_]{3,31}", url):
         logger.warning(
             "ADMIN_CONTACT_URL must be an HTTPS t.me username link. "
-            "Admin contact is disabled."
+            "The demo contact will be shown."
         )
         return ""
     return url
@@ -88,14 +96,21 @@ async def show_admin_contact(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    """Show the configured admin link without a default destination."""
+    """Show a configured admin link or an explicitly labeled demo link."""
     if update.message is None:
         return
     url = context.bot_data.get("admin_contact_url", "")
-    text = f"{CONTACT_MESSAGE}\n{url}" if url else CONTACT_UNAVAILABLE_MESSAGE
+    if url:
+        text = f"{CONTACT_MESSAGE}\n{url}"
+        keyboard = main_menu_keyboard()
+    else:
+        text = CONTACT_DEMO_MESSAGE
+        keyboard = InlineKeyboardMarkup(
+            [[InlineKeyboardButton(CONTACT_DEMO_BUTTON_LABEL, url=CONTACT_DEMO_URL)]]
+        )
     await update.message.reply_text(
         text,
-        reply_markup=main_menu_keyboard(),
+        reply_markup=keyboard,
         link_preview_options=LinkPreviewOptions(is_disabled=True),
     )
 

@@ -34,4 +34,9 @@ CHECKLIST_UNAVAILABLE_MESSAGE = (
 )
 
 CONTACT_MESSAGE = "You can contact the admin here:"
-CONTACT_UNAVAILABLE_MESSAGE = "The admin contact is not configured yet."
+CONTACT_DEMO_MESSAGE = (
+    "This is a demo contact. Use the button below to preview opening a link. "
+    "It opens an example website and does not contact an administrator."
+)
+CONTACT_DEMO_BUTTON_LABEL = "Open Demo Link"
+CONTACT_DEMO_URL = "https://example.com"
