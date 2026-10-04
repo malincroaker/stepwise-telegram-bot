@@ -156,7 +156,12 @@ async def menu_choice(
         await send_checklist(update)
         return
     if update.message.text == "Contact Admin":
-        context.user_data.pop(progress_key, None)
+        previous_step = context.user_data.pop(progress_key, None)
+        if previous_step is not None and not context.bot_data.get("admin_contact_url"):
+            # An inline link cannot replace the guide's reply keyboard.
+            await update.message.reply_text(
+                MAIN_MENU_MESSAGE, reply_markup=main_menu_keyboard()
+            )
         await show_admin_contact(update, context)
         return
     if update.message.text == "Help":
@@ -263,7 +268,9 @@ def main() -> None:
             )
         )
         # Keep the fallback last so known commands and buttons are handled first.
-        application.add_handler(MessageHandler(filters.TEXT, unknown_message))
+        application.add_handler(
+            MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, unknown_message)
+        )
         application.add_error_handler(handle_error)
         application.run_polling()
     except TelegramError:
