@@ -8,7 +8,6 @@ MENU_LAYOUT = (
 )
 
 MENU_RESPONSES = {
-    "Download Checklist": "The checklist download is not available yet.",
     "Contact Admin": "The admin contact will be added in a later step.",
     "Help": "Choose an option from the main menu. More help will be added soon.",
 }
@@ -29,3 +28,8 @@ GUIDE_STEPS = (
 
 GUIDE_COMPLETE_MESSAGE = "Guide complete! You can start again or choose another menu option."
 GUIDE_INACTIVE_MESSAGE = "Choose Start Guide from the main menu to begin."
+
+CHECKLIST_CAPTION = "Here is your project checklist."
+CHECKLIST_UNAVAILABLE_MESSAGE = (
+    "The checklist is temporarily unavailable. Please try again later."
+)

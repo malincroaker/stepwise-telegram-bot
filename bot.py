@@ -9,6 +9,8 @@ from telegram.error import TelegramError
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 from content import (
+    CHECKLIST_CAPTION,
+    CHECKLIST_UNAVAILABLE_MESSAGE,
     GUIDE_COMPLETE_MESSAGE,
     GUIDE_INACTIVE_MESSAGE,
     GUIDE_LAYOUT,
@@ -20,6 +22,7 @@ from content import (
 
 
 logger = logging.getLogger(__name__)
+CHECKLIST_PATH = Path(__file__).resolve().parent / "files" / "checklist.pdf"
 
 
 def main_menu_keyboard() -> ReplyKeyboardMarkup:
@@ -48,6 +51,25 @@ async def show_guide_step(update: Update, step: int) -> None:
         )
 
 
+async def send_checklist(update: Update) -> None:
+    """Send the fixed checklist file or a helpful availability message."""
+    if update.message is None:
+        return
+    try:
+        with CHECKLIST_PATH.open("rb") as checklist:
+            await update.message.reply_document(
+                document=checklist,
+                filename="checklist.pdf",
+                caption=CHECKLIST_CAPTION,
+                reply_markup=main_menu_keyboard(),
+            )
+    except OSError:
+        logger.warning("The checklist file could not be read.")
+        await update.message.reply_text(
+            CHECKLIST_UNAVAILABLE_MESSAGE, reply_markup=main_menu_keyboard()
+        )
+
+
 async def menu_choice(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
@@ -59,6 +81,10 @@ async def menu_choice(
     if update.message.text == "Start Guide":
         context.user_data[progress_key] = 0
         await show_guide_step(update, 0)
+        return
+    if update.message.text == "Download Checklist":
+        context.user_data.pop(progress_key, None)
+        await send_checklist(update)
         return
     response = MENU_RESPONSES.get(update.message.text)
     if response is not None:
